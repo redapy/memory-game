@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import Card from './components/Card';
+import CardList from './components/CardList.js/CardList';
 
 const cardImages = [
   { "src": "/img/helmet-1.png", 'matched': false },
@@ -78,17 +78,7 @@ function App() {
     <div className="App">
       <h1>Magic Match</h1>
       <button onClick={shuffleCards}>New Game</button>
-      <div className="card-grid">
-        {cards.map(card => (
-          <Card 
-            key={card.id}
-            card={card}
-            handleChoice={handleChoice}
-            flipped={card === choiceOne || card === choiceTwo || card.matched}
-            disabled={disabled}
-          />
-        ))}
-      </div>
+      <CardList cards={cards} handleChoice={handleChoice} choiceOne={choiceOne} choiceTwo={choiceTwo} disabled={disabled}/>
       <p>Turns: {turns}</p>
     </div>
   );
