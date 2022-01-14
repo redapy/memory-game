@@ -2,7 +2,7 @@ import Card from "../card/Card";
 
 const CardList = ({cards, handleChoice, choiceOne, choiceTwo, disabled}) => {
     return ( 
-        <div className="card-grid">
+        <div data-testid="div-grid" className="card-grid">
         {cards.map(card => (
           <Card 
             key={card.id}
