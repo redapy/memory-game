@@ -15,8 +15,8 @@ function App() {
   const [cards, setCards] = useState([]);
   const [turns, setTurns] = useState(0);
   const [choiceOne, setCoiceOne] = useState(null);
-  const [choiceTwo, setChoiceTwo] = useState(null)
-  const [disabled, setDisabled] = useState(false)
+  const [choiceTwo, setChoiceTwo] = useState(null);
+  const [disabled, setDisabled] = useState(false);
 
   //shufle cards
   const shuffleCards = () => {
@@ -32,8 +32,7 @@ function App() {
 
   //handle a choice
   const handleChoice = card => {
-    choiceOne ? setChoiceTwo(card) : setCoiceOne(card)
-    console.log(choiceOne, choiceTwo)
+    choiceOne ? setChoiceTwo(card) : setCoiceOne(card);
   };
 
   //rest choice
@@ -43,6 +42,7 @@ function App() {
     setTurns(prevturns => prevturns + 1)
     setDisabled(false)
   }
+
   //checking if choices match
   useEffect(() => {
     if (choiceTwo && choiceOne) {
@@ -75,7 +75,7 @@ function App() {
 
   
   return (
-    <div className="App">
+    <div data-testid="app-wrapper" className="App">
       <h1>Magic Match</h1>
       <button onClick={shuffleCards}>New Game</button>
       <CardList cards={cards} handleChoice={handleChoice} choiceOne={choiceOne} choiceTwo={choiceTwo} disabled={disabled}/>

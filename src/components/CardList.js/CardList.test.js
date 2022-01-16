@@ -31,7 +31,7 @@ describe('CardLIst Component', () => {
 
         it('should render a list of the cards', () => {
             render(<CardList {...props}/>)
-            const cardsWrapper = screen.getAllByTestId('div-wrapper');
+            const cardsWrapper = screen.getAllByTestId('card-component');
             expect(cardsWrapper.length).toBe(cards.length);
         })
     })

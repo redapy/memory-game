@@ -17,22 +17,22 @@ describe('Card Component', () => {
         disabeled: false
     };
     //tests
-    it('should render a div wrapper', () => {
+    it('should render a card', () => {
         render(<Card {...props}/>)
-        const divWrapper = screen.getByTestId('div-wrapper');
+        const divWrapper = screen.getByTestId('card-component');
         expect(divWrapper).toBeInTheDocument();
     });
 
     it('should render a div container without the flipped class when flipped prop is false', () => {
         render(<Card {...props}/>)
-        const divContainer = screen.getByTestId('div-container')
+        const divContainer = screen.getByTestId('card-container')
         expect(divContainer).toBeInTheDocument()
         expect(divContainer).not.toHaveClass('flipped')
     });
 
     it('should render a div container with the flipped class when flipped prop is true', () => {
         render(<Card {...props2}/>)
-        const divContainer = screen.getByTestId('div-container')
+        const divContainer = screen.getByTestId('card-container')
         expect(divContainer).toBeInTheDocument()
         expect(divContainer).toHaveClass('flipped')
     });
