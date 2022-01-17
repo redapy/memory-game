@@ -84,6 +84,18 @@ describe('App component', () => {
                 expect(imageTwo.parentElement).not.toHaveClass('flipped');
             }, 1000)         
         })
+
+        it('Should not flipp when a third card is clicked directly after two cards have been clicked', () => {
+            render(<App />)
+            const backImages = screen.getAllByAltText('back');
+            const cardContainer = screen.getAllByTestId('card-container');
+            fireEvent.click(backImages[0]);
+            fireEvent.click(backImages[1]);
+            expect(cardContainer[0]).toHaveClass('flipped')
+            expect(cardContainer[1]).toHaveClass('flipped')
+            fireEvent.click(backImages[2])
+            expect(cardContainer[2]).not.toHaveClass('flipped');
+        })
     })
 
     describe('Increasing the turns', () => {
@@ -122,8 +134,30 @@ describe('App component', () => {
         })
     })
 
-    // describe('Clicking the "new game" button', () => {
+    describe('Clicking the "new game" button', () => {
 
-    //     it('should rest turns to 0')
-    // })
+        it('Should rest turns to 0', () => {
+            render(<App />)
+            const backImages = screen.getAllByAltText('back');
+            const pElement = screen.getByText(/turns/i);
+            const butoon = screen.getByRole('button', {name: 'New Game'});
+            fireEvent.click(backImages[0]);
+            fireEvent.click(backImages[1]);
+            setTimeout(() => {
+                expect(pElement.textContent).toBe('Turns: 1')
+            }, 1000);
+            fireEvent.click(butoon)  
+            expect(pElement.textContent).toBe('Turns: 0')
+        });
+
+        it('Should return Clicked card to not be flipped',() => {
+            render(<App />)
+            const backImages = screen.getAllByAltText('back');
+            const butoon = screen.getByRole('button', {name: 'New Game'});
+            const cardContainer = screen.getAllByTestId('card-container');
+            fireEvent.click(backImages[0]);
+            fireEvent.click(butoon)
+            expect(cardContainer[0]).not.toHaveClass('.flipped')
+        })
+    })
 })

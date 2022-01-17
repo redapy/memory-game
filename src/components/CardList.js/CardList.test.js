@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import {render, screen } from "@testing-library/react";
 import CardList from "./CardList";
 
 describe('CardLIst Component', () => {
@@ -35,4 +35,19 @@ describe('CardLIst Component', () => {
             expect(cardsWrapper.length).toBe(cards.length);
         })
     })
+
+    // describe('Calling handleChoice', () => {
+    //     it('Should call handleChoice twice after clicking two cards in squence', () => {
+    //         render(<CardList {...props}/>)
+    //         const backImages = screen.getAllByAltText('back');
+    //         expect(mockedHandleChoice).not.toHaveBeenCalled();
+    //         fireEvent.click(backImages[0]);
+    //         fireEvent.click(backImages[1]);
+    //         expect(mockedHandleChoice).toHaveBeenCalledTimes(2)
+
+    //     })
+    //     it('Should NOT call handleChoice when the third card is Clicked after two cards have been clicked in sqence', () => {
+
+    //     })
+    // })
 })
