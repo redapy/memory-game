@@ -45,7 +45,7 @@ describe('App component', () => {
 
     describe('Card container class', () => {
 
-        it('The clicked card should have a flipped Class', () => {
+        it('The clicked card should has a flipped Class', () => {
             render(<App />)
             const backImages = screen.getAllByAltText('back');
             const cardContainer = screen.getAllByTestId('card-container');
@@ -65,7 +65,7 @@ describe('App component', () => {
             expect(imageTwo.parentElement).toHaveClass('flipped');
         })
 
-        it('If two elements that are NOT the same have been clicked in sequence they should NOT stay flipped', () => {
+        it('If two elements that are NOT the same have been clicked in sequence they should NOT stay flipped after 1 sec', () => {
             render(<App />)
             const frontimages = screen.getAllByAltText('front');
             const imageOne = frontimages.find(image => {
