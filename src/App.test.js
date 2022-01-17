@@ -1,5 +1,5 @@
 /* eslint-disable testing-library/no-node-access */
-import { fireEvent, render, screen } from "@testing-library/react"
+import {fireEvent, render, screen } from "@testing-library/react"
 import App from "./App"
 
 
@@ -45,15 +45,6 @@ describe('App component', () => {
 
     describe('Card container class', () => {
 
-        beforeEach(() => {
-            jest.useFakeTimers()
-          });
-
-          afterEach(() => {
-            jest.runOnlyPendingTimers()
-            jest.useRealTimers()
-          })
-
         it('The clicked card should have a flipped Class', () => {
             render(<App />)
             const backImages = screen.getAllByAltText('back');
@@ -62,12 +53,11 @@ describe('App component', () => {
             expect(cardContainer[0]).toHaveClass('flipped');
         });
 
-        it('If two elements that have the same src are clicked in sequence they should stay flipped', () => {
+        it('If two elements that are the same have been clicked in sequence they should stay flipped', () => {
             render(<App />)
             const frontImages = screen.getAllByAltText('front');
             const [imageOne, imageTwo] = frontImages.filter((image) => {
-                let attr = image.getAttribute('src');
-                 return attr === "/img/sword-1.png"
+                 return image.getAttribute('src') === "/img/sword-1.png"
             });
             fireEvent.click(imageOne.nextElementSibling)
             fireEvent.click(imageTwo.nextElementSibling)
@@ -75,7 +65,7 @@ describe('App component', () => {
             expect(imageTwo.parentElement).toHaveClass('flipped');
         })
 
-        it('If two elements that have NOT the same src are clicked in sequence they should NOT stay flipped', () => {
+        it('If two elements that are NOT the same have been clicked in sequence they should NOT stay flipped', () => {
             render(<App />)
             const frontimages = screen.getAllByAltText('front');
             const imageOne = frontimages.find(image => {
@@ -93,7 +83,47 @@ describe('App component', () => {
                 expect(imageOne.parentElement).not.toHaveClass('flipped');
                 expect(imageTwo.parentElement).not.toHaveClass('flipped');
             }, 1000)         
-
         })
     })
+
+    describe('Increasing the turns', () => {
+
+        it(`should increase turns when clicking two cards in sequence even they don't match`, () => {
+            render(<App />)
+            const frontimages = screen.getAllByAltText('front');
+            const imageOne = frontimages.find(image => {
+                return image.getAttribute('src') === "/img/sword-1.png"
+            });
+            const imageTwo = frontimages.find(image => {
+                return image.getAttribute('src') === "/img/shield-1.png"
+            });
+            const pElement = screen.getByText(/turns/i);
+            expect(pElement.textContent).toBe('Turns: 0')
+            fireEvent.click(imageOne.nextElementSibling);
+            fireEvent.click(imageTwo.nextElementSibling);
+            setTimeout(() => {
+                expect(pElement.textContent).toBe('Turns: 1')
+            }, 1000);            
+        })
+
+        it('Should increase turns when clicking two cards that match in sequence', () => {
+            render(<App />)
+            const frontImages = screen.getAllByAltText('front');
+            const [imageOne, imageTwo] = frontImages.filter(image => {
+                return image.getAttribute('src') === "/img/sword-1.png"
+            });
+            const pElement = screen.getByText(/turns/i);
+            expect(pElement.textContent).toBe('Turns: 0');
+            fireEvent.click(imageOne.nextElementSibling);
+            fireEvent.click(imageTwo.nextElementSibling);
+            setTimeout(() => {
+                expect(pElement.textContent).toBe('Turns: 1')
+            }, 1000);  
+        })
+    })
+
+    // describe('Clicking the "new game" button', () => {
+
+    //     it('should rest turns to 0')
+    // })
 })
