@@ -4,7 +4,34 @@ import App from "./App"
 
 
 describe('App component', () => {
+    //utilis
+    const clickOneRandomCard = i => {
+        const backImages = screen.getAllByAltText('back');
+        fireEvent.click(backImages[i])
+    };
 
+    const clickTwoMatchedCards = (src) => {
+        const frontImages = screen.getAllByAltText('front');
+        const [imageOne, imageTwo] = frontImages.filter((image) => {
+             return image.getAttribute('src') === src
+        });
+        fireEvent.click(imageOne.nextElementSibling)
+        fireEvent.click(imageTwo.nextElementSibling)
+        return [imageOne, imageTwo]
+    }
+    const clickTwoUnmatchedCards = (src1, src2) => {
+        const frontimages = screen.getAllByAltText('front');
+        const imageOne = frontimages.find(image => {
+            return image.getAttribute('src') === src1
+        });
+        const imageTwo = frontimages.find(image => {
+            return image.getAttribute('src') === src2
+        });
+        fireEvent.click(imageOne.nextElementSibling);
+        fireEvent.click(imageTwo.nextElementSibling);
+        return [imageOne, imageTwo]
+    };
+    //tests
     describe('Renders', () => {
         it('Should render a div wrapper', () => {
             render(<App />)
@@ -47,36 +74,21 @@ describe('App component', () => {
 
         it('The clicked card should has a flipped Class', () => {
             render(<App />)
-            const backImages = screen.getAllByAltText('back');
             const cardContainer = screen.getAllByTestId('card-container');
-            fireEvent.click(backImages[0])
+            clickOneRandomCard(0);
             expect(cardContainer[0]).toHaveClass('flipped');
         });
 
         it('If two elements that are the same have been clicked in sequence they should stay flipped', () => {
             render(<App />)
-            const frontImages = screen.getAllByAltText('front');
-            const [imageOne, imageTwo] = frontImages.filter((image) => {
-                 return image.getAttribute('src') === "/img/sword-1.png"
-            });
-            fireEvent.click(imageOne.nextElementSibling)
-            fireEvent.click(imageTwo.nextElementSibling)
+            const [imageOne, imageTwo] = clickTwoMatchedCards("/img/sword-1.png");
             expect(imageOne.parentElement).toHaveClass('flipped');
             expect(imageTwo.parentElement).toHaveClass('flipped');
         })
 
         it('If two elements that are NOT the same have been clicked in sequence they should NOT stay flipped after 1 sec', () => {
             render(<App />)
-            const frontimages = screen.getAllByAltText('front');
-            const imageOne = frontimages.find(image => {
-                return image.getAttribute('src') === "/img/sword-1.png"
-            });
-            const imageTwo = frontimages.find(image => {
-                return image.getAttribute('src') === "/img/shield-1.png"
-            });
-            fireEvent.click(imageOne.nextElementSibling);
-            expect(imageOne.parentElement).toHaveClass('flipped');
-            fireEvent.click(imageTwo.nextElementSibling);
+            const [imageOne, imageTwo] = clickTwoUnmatchedCards("/img/sword-1.png", "/img/shield-1.png");
             expect(imageOne.parentElement).toHaveClass('flipped');
             expect(imageTwo.parentElement).toHaveClass('flipped');
             setTimeout(() => {
@@ -87,14 +99,13 @@ describe('App component', () => {
 
         it('Should not flipp when a third card is clicked directly after two cards have been clicked', () => {
             render(<App />)
-            const backImages = screen.getAllByAltText('back');
-            const cardContainer = screen.getAllByTestId('card-container');
-            fireEvent.click(backImages[0]);
-            fireEvent.click(backImages[1]);
-            expect(cardContainer[0]).toHaveClass('flipped')
-            expect(cardContainer[1]).toHaveClass('flipped')
-            fireEvent.click(backImages[2])
-            expect(cardContainer[2]).not.toHaveClass('flipped');
+            const cardContainers = screen.getAllByTestId('card-container');
+            clickOneRandomCard(0);
+            clickOneRandomCard(1);
+            expect(cardContainers[0]).toHaveClass('flipped')
+            expect(cardContainers[1]).toHaveClass('flipped')
+            clickOneRandomCard(2);
+            expect(cardContainers[2]).not.toHaveClass('flipped');
         })
     })
 
@@ -120,14 +131,9 @@ describe('App component', () => {
 
         it('Should increase turns when clicking two cards that match in sequence', () => {
             render(<App />)
-            const frontImages = screen.getAllByAltText('front');
-            const [imageOne, imageTwo] = frontImages.filter(image => {
-                return image.getAttribute('src') === "/img/sword-1.png"
-            });
             const pElement = screen.getByText(/turns/i);
+            clickTwoMatchedCards("/img/sword-1.png");
             expect(pElement.textContent).toBe('Turns: 0');
-            fireEvent.click(imageOne.nextElementSibling);
-            fireEvent.click(imageTwo.nextElementSibling);
             setTimeout(() => {
                 expect(pElement.textContent).toBe('Turns: 1')
             }, 1000);  
@@ -138,11 +144,10 @@ describe('App component', () => {
 
         it('Should rest turns to 0', () => {
             render(<App />)
-            const backImages = screen.getAllByAltText('back');
             const pElement = screen.getByText(/turns/i);
             const butoon = screen.getByRole('button', {name: 'New Game'});
-            fireEvent.click(backImages[0]);
-            fireEvent.click(backImages[1]);
+            clickOneRandomCard(0);
+            clickOneRandomCard(1);
             setTimeout(() => {
                 expect(pElement.textContent).toBe('Turns: 1')
             }, 1000);
@@ -152,12 +157,11 @@ describe('App component', () => {
 
         it('Should return Clicked card to not be flipped',() => {
             render(<App />)
-            const backImages = screen.getAllByAltText('back');
             const butoon = screen.getByRole('button', {name: 'New Game'});
             const cardContainer = screen.getAllByTestId('card-container');
-            fireEvent.click(backImages[0]);
+            clickOneRandomCard(0);
             fireEvent.click(butoon)
             expect(cardContainer[0]).not.toHaveClass('.flipped')
         })
-    })
+    });
 })
